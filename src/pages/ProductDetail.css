@@ -1,0 +1,150 @@
+.detail-page {
+  padding-top: 90px;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.detail-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+
+.detail-img-wrap {
+  aspect-ratio: 3/4;
+  background: #3d3d3d;
+  overflow: hidden;
+}
+
+.detail-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #3d3d3d;
+}
+
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 20px;
+}
+
+.detail-category {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.detail-name {
+  font-family: 'Anuphan', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #2a2a2a;
+  line-height: 1.3;
+}
+
+.detail-price {
+  font-size: 20px;
+  color: #4C4C4C;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.detail-desc {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #666;
+}
+
+.detail-stock {
+  font-size: 13px;
+  color: #999;
+}
+
+.detail-qty {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid #ddd;
+  width: fit-content;
+}
+
+.detail-qty button {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #4C4C4C;
+}
+
+.detail-qty span {
+  padding: 10px 24px;
+  font-size: 15px;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  min-width: 60px;
+  text-align: center;
+}
+
+.detail-msg {
+  font-size: 13px;
+  color: #4C4C4C;
+}
+
+.detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-cart, .btn-order {
+  padding: 18px;
+  font-family: 'Anuphan', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cart {
+  background: #fff;
+  color: #4C4C4C;
+  border: 1px solid #ddd;
+}
+
+.btn-cart:hover { background: #f0f0f0; }
+
+.btn-order {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.btn-order:hover { background: #1a1a1a; }
+
+.btn-cart:disabled, .btn-order:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.detail-loading {
+  padding-top: 200px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}

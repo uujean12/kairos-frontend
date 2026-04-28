@@ -1,0 +1,167 @@
+.home { padding-top: 80px; }
+
+/* Hero */
+.hero {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 90px);
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.hero-image-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-card {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 520px;
+  background: rgba(23, 23, 23, 0.82);
+  padding: 60px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.hero-title {
+  font-family: 'Anuphan', sans-serif;
+  font-size: 44px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #fff;
+  text-align: center;
+}
+
+.hero-sub {
+  font-family: 'Anuphan', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.hero-btn {
+  display: inline-block;
+  padding: 20px 56px;
+  background: rgba(255, 255, 255, 0.88);
+  font-family: 'Anuphan', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  text-decoration: none;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.hero-btn:hover {
+  background: #fff;
+}
+
+/* Featured */
+.home-featured {
+  background: #f5f5f5;
+  padding: 96px 0;
+}
+
+.section-title {
+  text-align: center;
+  font-family: 'Anuphan', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: #4C4C4C;
+  margin-bottom: 56px;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 240px);
+  gap: 48px;
+  justify-content: center;
+}
+
+.featured-card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.featured-img-placeholder {
+  width: 240px;
+  height: 300px;
+  background: #3d3d3d;
+  margin-bottom: 16px;
+  transition: opacity 0.2s;
+}
+
+.featured-card:hover .featured-img-placeholder {
+  opacity: 0.85;
+}
+
+.featured-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.featured-name {
+  font-size: 14px;
+  color: #4C4C4C;
+}
+
+.featured-price {
+  font-size: 14px;
+  color: #4C4C4C;
+}
+
+/* Brand */
+.home-brand {
+  background: #fff;
+  padding: 120px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.brand-text {
+  max-width: 560px;
+  text-align: center;
+}
+
+.brand-text h2 {
+  font-family: 'Anuphan', sans-serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #2a2a2a;
+  line-height: 1.35;
+  margin-bottom: 28px;
+}
+
+.brand-text p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #666;
+  margin-bottom: 36px;
+}
+
+.brand-link {
+  font-size: 14px;
+  color: #4C4C4C;
+  text-decoration: none;
+  border-bottom: 1px solid #4C4C4C;
+  padding-bottom: 2px;
+  transition: opacity 0.2s;
+}
+
+.brand-link:hover { opacity: 0.5; }

@@ -1,0 +1,240 @@
+.cart-page {
+  padding-top: 80px;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.cart-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 40px 96px;
+}
+
+.cart-title {
+  font-family: 'Anuphan', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: #4C4C4C;
+  margin-bottom: 48px;
+}
+
+.cart-empty {
+  text-align: center;
+  padding: 120px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  color: #999;
+  font-size: 15px;
+}
+
+.cart-shop-link {
+  color: #4C4C4C;
+  font-size: 13px;
+  text-decoration: none;
+  border-bottom: 1px solid;
+  padding-bottom: 2px;
+}
+
+.cart-login-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 200px 0;
+  color: #666;
+  font-size: 15px;
+}
+
+.cart-login-btn {
+  background: #2a2a2a;
+  color: #fff;
+  padding: 14px 40px;
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.cart-content {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 48px;
+  align-items: start;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid #ddd;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 24px;
+  padding: 24px 0;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.cart-item-img {
+  width: 100px;
+  height: 120px;
+  background: #3d3d3d;
+  overflow: hidden;
+}
+
+.cart-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #3d3d3d;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cart-item-name { font-size: 14px; color: #2a2a2a; }
+.cart-item-price { font-size: 13px; color: #666; }
+
+.cart-qty {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  width: fit-content;
+  margin-top: 8px;
+}
+
+.cart-qty button {
+  background: none;
+  border: none;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #4C4C4C;
+}
+
+.cart-qty button:disabled { opacity: 0.3; }
+
+.cart-qty span {
+  padding: 6px 16px;
+  font-size: 13px;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  min-width: 40px;
+  text-align: center;
+}
+
+.cart-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.cart-subtotal { font-size: 15px; color: #2a2a2a; }
+
+.cart-remove {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.cart-remove:hover { color: #4C4C4C; }
+
+/* Sidebar */
+.cart-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 100px;
+}
+
+.order-form {
+  background: #fff;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-form h3 {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: #4C4C4C;
+  margin-bottom: 4px;
+}
+
+.order-form input,
+.order-form textarea {
+  border: 1px solid #e5e5e5;
+  padding: 12px;
+  font-family: 'Anuphan', sans-serif;
+  font-size: 13px;
+  color: #4C4C4C;
+  background: #fafafa;
+  outline: none;
+  width: 100%;
+  resize: none;
+}
+
+.order-form input:focus,
+.order-form textarea:focus {
+  border-color: #4C4C4C;
+  background: #fff;
+}
+
+.cart-summary {
+  background: #fff;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+}
+
+.summary-total {
+  font-size: 16px;
+  color: #2a2a2a;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.order-btn {
+  background: #2a2a2a;
+  color: #fff;
+  border: none;
+  padding: 18px;
+  font-family: 'Anuphan', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.order-btn:hover { background: #1a1a1a; }
+.order-btn:disabled { opacity: 0.5; cursor: not-allowed; }
