@@ -17,6 +17,10 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
+import PaymentSuccess from './pages/Payment';
+import PaymentFail from './pages/PaymentFail';
+import MyPage from './pages/MyPage';
+import FindAccount from './pages/FindAccount';
 
 function MainLayout({ children }) {
   return (
@@ -56,6 +60,10 @@ export default function App() {
                   <Route path="/oauth2/callback" element={<OAuth2Callback />} />
                   <Route path="/archive" element={<Shop />} />
                   <Route path="/stockists" element={<Info />} />
+                  <Route path="/payment/success" element={<PaymentSuccess />} />
+                  <Route path="/payment/fail" element={<PaymentFail />} />
+                  <Route path="/mypage" element={<MyPage />} />
+                  <Route path="/find-account" element={<FindAccount />} />
                 </Routes>
               </MainLayout>
             } />

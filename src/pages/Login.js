@@ -34,16 +34,17 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
+        <Link to="/" className="login-logo">kairos</Link>
+
         {mode === 'login' ? (
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-field">
               <label>ID</label>
               <div className="login-field-right">
-                <button type="button" className="login-find" onClick={() => {}}>아이디 찾기</button>
+                <Link to="/find-account" className="login-find">아이디 찾기</Link>
               </div>
               <input
                 type="email"
-                placeholder=""
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
                 required
@@ -52,11 +53,10 @@ export default function Login() {
             <div className="login-field">
               <label>Password</label>
               <div className="login-field-right">
-                <button type="button" className="login-find" onClick={() => {}}>비밀번호 찾기</button>
+                <Link to="/find-account" className="login-find">비밀번호 찾기</Link>
               </div>
               <input
                 type="password"
-                placeholder=""
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
                 required

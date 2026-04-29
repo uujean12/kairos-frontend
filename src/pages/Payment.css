@@ -1,0 +1,81 @@
+.payment-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  font-family: 'Anuphan', sans-serif;
+  color: #666;
+  font-size: 15px;
+}
+
+.payment-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #2a2a2a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.payment-result {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-family: 'Anuphan', sans-serif;
+  padding-top: 80px;
+}
+
+.payment-fail-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #c00;
+  color: #fff;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-result h2 {
+  font-size: 22px;
+  font-weight: 400;
+  color: #2a2a2a;
+}
+
+.payment-result p {
+  font-size: 14px;
+  color: #999;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.payment-btn-primary {
+  padding: 14px 32px;
+  background: #2a2a2a;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.payment-btn-secondary {
+  padding: 14px 32px;
+  background: #fff;
+  color: #4C4C4C;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  font-size: 13px;
+}

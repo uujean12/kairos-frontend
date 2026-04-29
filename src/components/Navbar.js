@@ -30,7 +30,10 @@ export default function Navbar() {
             {lang}
           </button>
           {user ? (
-            <button className="navbar-link-btn" onClick={handleLogout}>LOGOUT</button>
+            <>
+              <Link to="/mypage">MY</Link>
+              <button className="navbar-link-btn" onClick={handleLogout}>LOGOUT</button>
+            </>
           ) : (
             <Link to="/login">LOGIN</Link>
           )}

@@ -26,23 +26,46 @@ export default function Cart() {
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   const handleOrder = async () => {
-    if (cartItems.length === 0) { alert('장바구니가 비어있습니다.'); return; }
-    if (!form.recipient || !form.phone || !form.address) { alert('배송 정보를 입력해주세요.'); return; }
-    setOrdering(true);
-    try {
-      const res = await orderAPI.create({
-        items: cartItems.map(i => ({ productId: i.productId, quantity: i.quantity })),
-        shippingInfo: form,
-        totalPrice: total,
-      });
-      await clearCart();
-      navigate(`/orders/${res.data.id}`);
-    } catch (err) {
-      alert(err.response?.data?.message || '주문 처리 중 오류가 발생했습니다.');
-    } finally {
-      setOrdering(false);
+  if (cartItems.length === 0) { alert('장바구니가 비어있습니다.'); return; }
+  if (!form.recipient || !form.phone || !form.address) { alert('배송 정보를 입력해주세요.'); return; }
+
+  setOrdering(true);
+  try {
+    // 1. 먼저 주문 생성
+    const res = await orderAPI.create({
+      items: cartItems.map(i => ({ productId: i.productId, quantity: i.quantity })),
+      shippingInfo: form,
+      totalPrice: total,
+    });
+
+    const orderId = `kairos-${res.data.id}-${Date.now()}`;
+    const orderAmount = total >= 50000 ? total : total + 3000;
+
+    // 2. 토스 결제창 띄우기
+    const tossPayments = window.TossPayments(
+      process.env.REACT_APP_TOSS_CLIENT_KEY
+    );
+
+    await tossPayments.requestPayment('카드', {
+      amount: orderAmount,
+      orderId: orderId,
+      orderName: cartItems[0].name + (cartItems.length > 1 ? ` 외 ${cartItems.length - 1}건` : ''),
+      customerName: form.recipient,
+      successUrl: `${window.location.origin}/payment/success`,
+      failUrl: `${window.location.origin}/payment/fail`,
+    });
+
+  } catch (err) {
+    console.log('토스 에러:', err);
+    console.log('에러 코드:', err.code);
+    console.log('에러 메시지:', err.message);
+    if (err.code !== 'USER_CANCEL') {
+      alert(err.message || '오류가 발생했습니다.');
     }
-  };
+  } finally {
+    setOrdering(false);
+  }
+};
 
   return (
     <div className="cart-page">
