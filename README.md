@@ -1,7 +1,7 @@
 # kairos-frontend
 
-> 운동 용품 전문 커머스 플랫폼 **kairos**의 프론트엔드<br>
-> React 18 기반의 커머스 플랫폼으로, 토스페이먼츠 결제 연동과 OAuth2 소셜 로그인을 포함한 완전한 쇼핑 경험을 제공합니다.
+> 운동 용품 전문 커머스 플랫폼으로
+> 토스페이먼츠 결제 연동과 OAuth2 소셜 로그인을 포함한 완전한 쇼핑 경험을 제공합니다.
 
 <img width="1512" height="807" alt="스크린샷 2026-04-30 오후 12 34 03" src="https://github.com/user-attachments/assets/890ace03-17c2-45e1-b885-3669a16c40fc" />
 
