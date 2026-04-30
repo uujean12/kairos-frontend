@@ -1,4 +1,4 @@
-# kairos-frontend
+### kairos-frontend
 
 > 운동 용품 전문 커머스 플랫폼 **kairos**의 프론트엔드
 
