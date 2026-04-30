@@ -230,4 +230,4 @@ npm run build
 
 ```
 GitHub push → Vercel 감지 → 빌드 → 배포
-```<img width="1512" height="817" alt="스크린샷 2026-04-30 오후 12 31 22" src="https://github.com/user-attachments/assets/cab19be0-f8cc-4da8-b0d0-b80903bc6817" />
+```
