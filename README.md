@@ -5,7 +5,7 @@
 React 18 기반의 커머스 플랫폼으로, 토스페이먼츠 결제 연동과 OAuth2 소셜 로그인을 포함한 완전한 쇼핑 경험을 제공합니다.
 <img width="1512" height="816" alt="image" src="https://github.com/user-attachments/assets/8cad26e6-ba4b-49f3-8b23-61f7b9a558df" />
 
----
+
 
 ## 📋 프로젝트 개요
 
@@ -24,7 +24,7 @@ Context API를 활용한 전역 상태 관리, Axios 인터셉터 기반 JWT 자
 - **관리자 페이지**: 상품/주문/회원 관리 대시보드
 - **반응형 UI**: 커스텀 CSS로 구현된 미니멀 디자인
 
----
+
 
 ## 🏗️ 프로젝트 구조
 
@@ -63,7 +63,7 @@ src
         └── AdminUsers.js     # 회원 관리 (권한 변경)
 ```
 
----
+
 
 ## 🔧 핵심 모듈 설명
 
@@ -123,7 +123,7 @@ Kakao 로그인 버튼 클릭
 개인정보 동의 → 필수 체크 후 회원가입 버튼 활성화
 ```
 
----
+
 
 ## 📦 기술 스택 및 의존성
 
@@ -169,7 +169,7 @@ npm start
 npm run build
 ```
 
----
+
 
 ## 📝 페이지 라우팅
 
@@ -201,7 +201,7 @@ npm run build
 - Node.js 18+
 - npm 9+
 
----
+
 
 ## 🛠️ 트러블슈팅
 
@@ -217,7 +217,7 @@ npm run build
 - **문제**: API 응답이 Page 객체(`content` 포함)인데 배열로 처리
 - **해결**: `res.data.content` 또는 `res.data` 분기 처리
 
----
+
 
 ## 📄 배포
 
