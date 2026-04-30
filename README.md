@@ -209,24 +209,24 @@ npm run build
 ## 🛠️ 트러블슈팅
 
 ### 토스페이먼츠 400 에러
-- **문제**: `orderId`에 허용되지 않는 문자 포함
-- **해결**: `orderId` 형식을 `kairos-{id}-{timestamp}` (하이픈만 사용)로 변경
+- 문제: `orderId`에 허용되지 않는 문자 포함
+- 해결: `orderId` 형식을 `kairos-{id}-{timestamp}` (하이픈만 사용)로 변경
 
 ### OAuth2 카카오 세션 유지 문제
-- **문제**: 카카오 로그인 후 세션이 남아 다음 로그인 시 로그인창 생략
-- **해결**: 로그아웃 시 `kauth.kakao.com/oauth/logout` 호출로 카카오 세션 함께 해제
+- 문제: 카카오 로그인 후 세션이 남아 다음 로그인 시 로그인창 생략
+- 해결: 로그아웃 시 `kauth.kakao.com/oauth/logout` 호출로 카카오 세션 함께 해제
 
-### 메인 화면 상품 `map is not a function` 오류
-- **문제**: API 응답이 Page 객체(`content` 포함)인데 배열로 처리
-- **해결**: `res.data.content` 또는 `res.data` 분기 처리
+### 메인 화면 상품 map is not a function 오류
+- 문제: API 응답이 Page 객체(`content` 포함)인데 배열로 처리
+- 해결: `res.data.content` 또는 `res.data` 분기 처리
 
 <br>
 
 ## 📄 배포
 
-- **플랫폼**: Vercel
-- **도메인**: https://kaiiros.shop (가비아 DNS → Vercel 연결)
-- **배포 방식**: GitHub 연동 자동 배포 (main 브랜치 push 시 자동 빌드)
+- 플랫폼: Vercel
+- 도메인: https://kaiiros.shop (가비아 DNS → Vercel 연결)
+- 배포 방식: GitHub 연동 자동 배포 (main 브랜치 push 시 자동 빌드)
 
 ```
 GitHub push → Vercel 감지 → 빌드 → 배포
