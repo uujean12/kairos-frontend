@@ -26,11 +26,21 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try { await authAPI.logout(); } catch {}
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
-    setUser(null);
-  };
+  try {
+    const res = await authAPI.logout();
+    // 카카오 로그아웃이 필요한 경우
+    if (res.data.kakaoLogoutUrl) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
+      setUser(null);
+      window.location.href = res.data.kakaoLogoutUrl;
+      return;
+    }
+  } catch {}
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('user');
+  setUser(null);
+};
 
   const register = async (email, password, name) => {
     const res = await authAPI.register(email, password, name);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../api';
+import api from '../api';
 import './Login.css';
 
 export default function Login() {
@@ -9,12 +10,53 @@ export default function Login() {
   const navigate = useNavigate();
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ email: '', password: '', name: '' });
+  const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [validations, setValidations] = useState({
+    emailExists: false,
+    emailFormat: true,
+    passwordMatch: true,
+    passwordStrength: true,
+  });
+
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const validatePassword = (pw) => {
+    const hasLength = pw.length >= 10;
+    const hasNumber = /[0-9]/.test(pw);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pw);
+    return hasLength && hasNumber && hasSpecial;
+  };
+
+  const checkEmailDuplicate = async (email) => {
+    if (!validateEmail(email)) {
+      setValidations(v => ({ ...v, emailFormat: false, emailExists: false }));
+      return;
+    }
+    setValidations(v => ({ ...v, emailFormat: true }));
+    try {
+      await api.get(`/api/auth/check-email?email=${email}`);
+      setValidations(v => ({ ...v, emailExists: false }));
+    } catch {
+      setValidations(v => ({ ...v, emailExists: true }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (mode === 'register') {
+      if (!validateEmail(form.email)) { setError('올바른 이메일 형식이 아닙니다.'); return; }
+      if (validations.emailExists) { setError('이미 사용 중인 이메일입니다.'); return; }
+      if (!validatePassword(form.password)) { setError('비밀번호는 10자 이상, 숫자, 특수기호를 포함해야 합니다.'); return; }
+      if (form.password !== passwordConfirm) { setError('비밀번호가 일치하지 않습니다.'); return; }
+      if (!agreed) { setError('개인정보 처리방침에 동의해주세요.'); return; }
+    }
+
     setLoading(true);
     try {
       if (mode === 'login') {
@@ -31,45 +73,103 @@ export default function Login() {
     }
   };
 
+  const PrivacyAgreement = () => (
+    <div style={{ marginTop: 16, padding: '16px', background: '#f9f9f9', fontSize: 13 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+        <input
+          type="checkbox"
+          id="agree"
+          checked={agreed}
+          onChange={e => setAgreed(e.target.checked)}
+          style={{ marginTop: 2, cursor: 'pointer' }}
+        />
+        <label htmlFor="agree" style={{ cursor: 'pointer', color: '#444', lineHeight: 1.5 }}>
+          <span style={{ color: '#c00' }}>[필수]</span> 개인정보 처리방침에 동의합니다.{' '}
+          <span
+            style={{ color: '#4C4C4C', textDecoration: 'underline', cursor: 'pointer' }}
+            onClick={() => setShowPrivacy(!showPrivacy)}
+          >
+            내용 보기
+          </span>
+        </label>
+      </div>
+      {showPrivacy && (
+        <div style={{
+          marginTop: 12, padding: 12, background: '#fff',
+          border: '1px solid #e0e0e0', fontSize: 12, color: '#666',
+          lineHeight: 1.8, maxHeight: 200, overflowY: 'auto'
+        }}>
+          <strong>개인정보 처리방침</strong><br /><br />
+          kairos(이하 "회사")는 회원의 개인정보를 중요시하며, 개인정보보호법 등 관련 법령을 준수합니다.<br /><br />
+          <strong>1. 수집하는 개인정보 항목</strong><br />
+          - 필수: 이름, 이메일<br />
+          - 선택: 전화번호, 주소<br /><br />
+          <strong>2. 개인정보 수집 및 이용 목적</strong><br />
+          - 회원 식별 및 서비스 제공<br />
+          - 주문 및 배송 처리<br />
+          - 고객 문의 응대<br /><br />
+          <strong>3. 개인정보 보유 및 이용 기간</strong><br />
+          - 회원 탈퇴 시까지 보유<br />
+          - 단, 관련 법령에 따라 일정 기간 보존<br /><br />
+          <strong>4. 개인정보의 제3자 제공</strong><br />
+          - 회사는 원칙적으로 회원의 개인정보를 외부에 제공하지 않습니다.<br /><br />
+          <strong>5. 문의</strong><br />
+          - 이메일: support@kaiiros.shop
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="login-page">
       <div className="login-card">
         <Link to="/" className="login-logo">kairos</Link>
 
         {mode === 'login' ? (
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="login-field">
-              <label>ID</label>
-              <div className="login-field-right">
-                <Link to="/find-account" className="login-find">아이디 찾기</Link>
+          <>
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="login-field">
+                <label>ID</label>
+                <div className="login-field-right">
+                  <Link to="/find-account" className="login-find">아이디 찾기</Link>
+                </div>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  required
+                />
               </div>
-              <input
-                type="email"
-                value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })}
-                required
-              />
-            </div>
-            <div className="login-field">
-              <label>Password</label>
-              <div className="login-field-right">
-                <Link to="/find-account" className="login-find">비밀번호 찾기</Link>
+              <div className="login-field">
+                <label>Password</label>
+                <div className="login-field-right">
+                  <Link to="/find-account" className="login-find">비밀번호 찾기</Link>
+                </div>
+                <input
+                  type="password"
+                  value={form.password}
+                  onChange={e => setForm({ ...form, password: e.target.value })}
+                  required
+                />
               </div>
-              <input
-                type="password"
-                value={form.password}
-                onChange={e => setForm({ ...form, password: e.target.value })}
-                required
-              />
+              {error && <p className="login-error">{error}</p>}
+              <button type="submit" className="login-btn-black" disabled={loading}>
+                {loading ? '...' : '로그인'}
+              </button>
+              <button type="button" className="login-btn-white" onClick={() => { setMode('register'); setError(''); setAgreed(false); }}>
+                회원가입
+              </button>
+            </form>
+
+            <div className="social-btns">
+              <button className="social-btn google" onClick={() => authAPI.googleLogin()}>
+                Google로 계속하기
+              </button>
+              <button className="social-btn kakao" onClick={() => authAPI.kakaoLogin()}>
+                카카오로 계속하기
+              </button>
             </div>
-            {error && <p className="login-error">{error}</p>}
-            <button type="submit" className="login-btn-black" disabled={loading}>
-              {loading ? '...' : '로그인'}
-            </button>
-            <button type="button" className="login-btn-white" onClick={() => { setMode('register'); setError(''); }}>
-              회원가입
-            </button>
-          </form>
+          </>
         ) : (
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-field">
@@ -86,37 +186,74 @@ export default function Login() {
               <input
                 type="email"
                 value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })}
+                onChange={e => {
+                  setForm({ ...form, email: e.target.value });
+                  checkEmailDuplicate(e.target.value);
+                }}
                 required
               />
+              {form.email && !validations.emailFormat && (
+                <p className="validation-error">올바른 이메일 형식이 아닙니다.</p>
+              )}
+              {form.email && validations.emailFormat && validations.emailExists && (
+                <p className="validation-error">이미 사용 중인 이메일입니다.</p>
+              )}
+              {form.email && validations.emailFormat && !validations.emailExists && (
+                <p className="validation-success">사용 가능한 이메일입니다.</p>
+              )}
             </div>
             <div className="login-field">
               <label>비밀번호</label>
               <input
                 type="password"
                 value={form.password}
-                onChange={e => setForm({ ...form, password: e.target.value })}
+                onChange={e => {
+                  setForm({ ...form, password: e.target.value });
+                  setValidations(v => ({ ...v, passwordStrength: validatePassword(e.target.value) }));
+                }}
                 required
               />
+              {form.password && !validations.passwordStrength && (
+                <p className="validation-error">10자 이상, 숫자, 특수기호를 포함해야 합니다.</p>
+              )}
+              {form.password && validations.passwordStrength && (
+                <p className="validation-success">안전한 비밀번호입니다.</p>
+              )}
             </div>
+            <div className="login-field">
+              <label>비밀번호 확인</label>
+              <input
+                type="password"
+                value={passwordConfirm}
+                onChange={e => {
+                  setPasswordConfirm(e.target.value);
+                  setValidations(v => ({ ...v, passwordMatch: e.target.value === form.password }));
+                }}
+                required
+              />
+              {passwordConfirm && !validations.passwordMatch && (
+                <p className="validation-error">비밀번호가 일치하지 않습니다.</p>
+              )}
+              {passwordConfirm && validations.passwordMatch && (
+                <p className="validation-success">비밀번호가 일치합니다.</p>
+              )}
+            </div>
+
+            <PrivacyAgreement />
+
             {error && <p className="login-error">{error}</p>}
-            <button type="submit" className="login-btn-black" disabled={loading}>
+            <button
+              type="submit"
+              className="login-btn-black"
+              disabled={loading || validations.emailExists || !validations.emailFormat || !validations.passwordStrength || !validations.passwordMatch || !agreed}
+            >
               {loading ? '...' : '회원가입'}
             </button>
-            <button type="button" className="login-btn-white" onClick={() => { setMode('login'); setError(''); }}>
+            <button type="button" className="login-btn-white" onClick={() => { setMode('login'); setError(''); setAgreed(false); }}>
               로그인으로 돌아가기
             </button>
           </form>
         )}
-
-        <div className="social-btns">
-          <button className="social-btn google" onClick={() => authAPI.googleLogin()}>
-            Google로 계속하기
-          </button>
-          <button className="social-btn kakao" onClick={() => authAPI.kakaoLogin()}>
-            카카오로 계속하기
-          </button>
-        </div>
       </div>
     </div>
   );

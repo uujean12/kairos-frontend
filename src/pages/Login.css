@@ -180,3 +180,15 @@
 }
 
 .social-btn.kakao:hover { background: #F6DC00; }
+
+.validation-error {
+  font-size: 11px;
+  color: #c00;
+  margin-top: 4px;
+}
+
+.validation-success {
+  font-size: 11px;
+  color: #006600;
+  margin-top: 4px;
+}

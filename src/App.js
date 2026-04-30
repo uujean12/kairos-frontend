@@ -21,6 +21,8 @@ import PaymentSuccess from './pages/Payment';
 import PaymentFail from './pages/PaymentFail';
 import MyPage from './pages/MyPage';
 import FindAccount from './pages/FindAccount';
+import AdditionalInfo from './pages/AdditionalInfo';
+
 
 function MainLayout({ children }) {
   return (
@@ -64,6 +66,7 @@ export default function App() {
                   <Route path="/payment/fail" element={<PaymentFail />} />
                   <Route path="/mypage" element={<MyPage />} />
                   <Route path="/find-account" element={<FindAccount />} />
+                  <Route path="/additional-info" element={<AdditionalInfo />} />
                 </Routes>
               </MainLayout>
             } />
