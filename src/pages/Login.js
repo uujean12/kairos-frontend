@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../api';
 import api from '../api';
 import './Login.css';
 
 export default function Login() {
-  const { login, register } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [mode, setMode] = useState('login');
-  const [form, setForm] = useState({ email: '', password: '', name: '' });
-  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [form, setForm] = useState({ email: '', name: '', password: '', passwordConfirm: '' });
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [needVerification, setNeedVerification] = useState(false);
   const [validations, setValidations] = useState({
     emailExists: false,
     emailFormat: true,
     passwordMatch: true,
     passwordStrength: true,
   });
+
+  const verified = searchParams.get('verified');
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -45,31 +50,59 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // 회원가입
+  const handleRegister = async () => {
     setError('');
-
-    if (mode === 'register') {
-      if (!validateEmail(form.email)) { setError('올바른 이메일 형식이 아닙니다.'); return; }
-      if (validations.emailExists) { setError('이미 사용 중인 이메일입니다.'); return; }
-      if (!validatePassword(form.password)) { setError('비밀번호는 10자 이상, 숫자, 특수기호를 포함해야 합니다.'); return; }
-      if (form.password !== passwordConfirm) { setError('비밀번호가 일치하지 않습니다.'); return; }
-      if (!agreed) { setError('개인정보 처리방침에 동의해주세요.'); return; }
-    }
+    if (!form.name) { setError('이름을 입력해주세요.'); return; }
+    if (!validateEmail(form.email)) { setError('올바른 이메일 형식이 아닙니다.'); return; }
+    if (validations.emailExists) { setError('이미 사용 중인 이메일입니다.'); return; }
+    if (!validatePassword(form.password)) { setError('비밀번호는 10자 이상, 숫자, 특수기호를 포함해야 합니다.'); return; }
+    if (form.password !== form.passwordConfirm) { setError('비밀번호가 일치하지 않습니다.'); return; }
+    if (!agreed) { setError('개인정보 처리방침에 동의해주세요.'); return; }
 
     setLoading(true);
     try {
-      if (mode === 'login') {
-        await login(form.email, form.password);
-        navigate('/');
-      } else {
-        await register(form.email, form.password, form.name);
-        navigate('/');
-      }
+      await api.post('/api/auth/register', {
+        email: form.email,
+        name: form.name,
+        password: form.password,
+      });
+      setRegisterSuccess(true);
     } catch (err) {
-      setError(err.response?.data?.message || '이메일 또는 비밀번호를 확인해주세요.');
+      setError(err.response?.data?.message || '오류가 발생했습니다.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 로그인
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setNeedVerification(false);
+
+    setLoading(true);
+    try {
+      await login(loginForm.email, loginForm.password);
+      navigate('/');
+    } catch (err) {
+      if (err.response?.status === 403 && err.response?.data?.needVerification) {
+        setNeedVerification(true);
+      } else {
+        setError(err.response?.data?.message || '이메일 또는 비밀번호를 확인해주세요.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 인증 메일 재발송
+  const handleResendVerification = async () => {
+    try {
+      await api.post('/api/auth/send-verification', { email: form.email || loginForm.email });
+      alert('인증 메일을 재발송했습니다. 메일함을 확인해주세요.');
+    } catch {
+      alert('메일 발송 중 오류가 발생했습니다.');
     }
   };
 
@@ -125,9 +158,45 @@ export default function Login() {
       <div className="login-card">
         <Link to="/" className="login-logo">kairos</Link>
 
-        {mode === 'login' ? (
+        {/* 이메일 인증 완료 메시지 */}
+        {verified === 'true' && (
+          <div style={{ background: '#f0fff0', border: '1px solid #c3e6c3', padding: 16, marginBottom: 16, fontSize: 13, color: '#2d6a2d', textAlign: 'center' }}>
+            이메일 인증이 완료되었습니다. 로그인해주세요 😊
+          </div>
+        )}
+        {verified === 'false' && (
+          <div style={{ background: '#fff5f5', border: '1px solid #fcc', padding: 16, marginBottom: 16, fontSize: 13, color: '#c00', textAlign: 'center' }}>
+            인증 링크가 만료되었습니다. 다시 인증 메일을 요청해주세요.
+          </div>
+        )}
+
+        {/* 회원가입 성공 - 인증 메일 발송 완료 */}
+        {registerSuccess ? (
+          <div style={{ textAlign: 'center', padding: '32px 0' }}>
+            <div style={{ fontSize: 32, marginBottom: 16 }}>📧</div>
+            <p style={{ fontSize: 15, color: '#111', marginBottom: 8 }}>인증 메일을 발송했습니다!</p>
+            <p style={{ fontSize: 13, color: '#999', marginBottom: 24, lineHeight: 1.6 }}>
+              <strong>{form.email}</strong>로 발송된 메일에서<br />
+              인증 링크를 클릭해주세요.
+            </p>
+            <button
+              onClick={handleResendVerification}
+              style={{ background: 'none', border: 'none', fontSize: 13, color: '#4C4C4C', textDecoration: 'underline', cursor: 'pointer', marginBottom: 16 }}
+            >
+              인증 메일 재발송
+            </button>
+            <br />
+            <button
+              onClick={() => { setRegisterSuccess(false); setMode('login'); }}
+              className="login-btn-black"
+              style={{ marginTop: 8 }}
+            >
+              로그인 페이지로
+            </button>
+          </div>
+        ) : mode === 'login' ? (
           <>
-            <form onSubmit={handleSubmit} className="login-form">
+            <form onSubmit={handleLogin} className="login-form">
               <div className="login-field">
                 <label>ID</label>
                 <div className="login-field-right">
@@ -135,8 +204,8 @@ export default function Login() {
                 </div>
                 <input
                   type="email"
-                  value={form.email}
-                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  value={loginForm.email}
+                  onChange={e => setLoginForm({ ...loginForm, email: e.target.value })}
                   required
                 />
               </div>
@@ -147,12 +216,25 @@ export default function Login() {
                 </div>
                 <input
                   type="password"
-                  value={form.password}
-                  onChange={e => setForm({ ...form, password: e.target.value })}
+                  value={loginForm.password}
+                  onChange={e => setLoginForm({ ...loginForm, password: e.target.value })}
                   required
                 />
               </div>
               {error && <p className="login-error">{error}</p>}
+
+              {needVerification && (
+                <div style={{ background: '#fff9e6', border: '1px solid #ffe58f', padding: 12, fontSize: 13, color: '#996600', marginTop: 8 }}>
+                  이메일 인증이 필요합니다.{' '}
+                  <span
+                    style={{ textDecoration: 'underline', cursor: 'pointer' }}
+                    onClick={handleResendVerification}
+                  >
+                    인증 메일 재발송
+                  </span>
+                </div>
+              )}
+
               <button type="submit" className="login-btn-black" disabled={loading}>
                 {loading ? '...' : '로그인'}
               </button>
@@ -171,7 +253,7 @@ export default function Login() {
             </div>
           </>
         ) : (
-          <form onSubmit={handleSubmit} className="login-form">
+          <div className="login-form">
             <div className="login-field">
               <label>이름</label>
               <input
@@ -211,6 +293,7 @@ export default function Login() {
                   setForm({ ...form, password: e.target.value });
                   setValidations(v => ({ ...v, passwordStrength: validatePassword(e.target.value) }));
                 }}
+                placeholder="10자 이상, 숫자, 특수기호 포함"
                 required
               />
               {form.password && !validations.passwordStrength && (
@@ -224,17 +307,17 @@ export default function Login() {
               <label>비밀번호 확인</label>
               <input
                 type="password"
-                value={passwordConfirm}
+                value={form.passwordConfirm}
                 onChange={e => {
-                  setPasswordConfirm(e.target.value);
+                  setForm({ ...form, passwordConfirm: e.target.value });
                   setValidations(v => ({ ...v, passwordMatch: e.target.value === form.password }));
                 }}
                 required
               />
-              {passwordConfirm && !validations.passwordMatch && (
+              {form.passwordConfirm && !validations.passwordMatch && (
                 <p className="validation-error">비밀번호가 일치하지 않습니다.</p>
               )}
-              {passwordConfirm && validations.passwordMatch && (
+              {form.passwordConfirm && validations.passwordMatch && (
                 <p className="validation-success">비밀번호가 일치합니다.</p>
               )}
             </div>
@@ -242,17 +325,23 @@ export default function Login() {
             <PrivacyAgreement />
 
             {error && <p className="login-error">{error}</p>}
+
             <button
-              type="submit"
+              type="button"
               className="login-btn-black"
+              onClick={handleRegister}
               disabled={loading || validations.emailExists || !validations.emailFormat || !validations.passwordStrength || !validations.passwordMatch || !agreed}
             >
               {loading ? '...' : '회원가입'}
             </button>
-            <button type="button" className="login-btn-white" onClick={() => { setMode('login'); setError(''); setAgreed(false); }}>
+            <button
+              type="button"
+              className="login-btn-white"
+              onClick={() => { setMode('login'); setError(''); setAgreed(false); }}
+            >
               로그인으로 돌아가기
             </button>
-          </form>
+          </div>
         )}
       </div>
     </div>
