@@ -25,6 +25,10 @@ export default function MyPage() {
   const [editMode, setEditMode] = useState({ phone: false, address: false });
   const [infoSaving, setInfoSaving] = useState(false);
   const [infoMsg, setInfoMsg] = useState('');
+  const [showWithdraw, setShowWithdraw] = useState(false);
+  const [withdrawPassword, setWithdrawPassword] = useState('');
+  const [withdrawError, setWithdrawError] = useState('');
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
@@ -72,6 +76,29 @@ export default function MyPage() {
   const handleLogout = async () => {
     await logout();
     navigate('/');
+  };
+
+  const handleWithdraw = async () => {
+    setWithdrawError('');
+    setWithdrawLoading(true);
+    try {
+      const res = await api.delete('/api/auth/withdraw', {
+        data: { password: withdrawPassword }
+      });
+      if (res.data.kakaoLogoutUrl) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
+        window.location.href = res.data.kakaoLogoutUrl;
+        return;
+      }
+      alert('탈퇴가 완료되었습니다.');
+      await logout();
+      navigate('/');
+    } catch (err) {
+      setWithdrawError(err.response?.data?.message || '오류가 발생했습니다.');
+    } finally {
+      setWithdrawLoading(false);
+    }
   };
 
   return (
@@ -248,6 +275,54 @@ export default function MyPage() {
                     {infoMsg}
                   </p>
                 )}
+
+                {/* 회원 탈퇴 */}
+                <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid #f0f0f0' }}>
+                  {!showWithdraw ? (
+                    <button
+                      onClick={() => setShowWithdraw(true)}
+                      style={{ background: 'none', border: 'none', fontSize: 13, color: '#999', textDecoration: 'underline', cursor: 'pointer' }}
+                    >
+                      회원 탈퇴
+                    </button>
+                  ) : (
+                    <div>
+                      <p style={{ fontSize: 14, color: '#333', marginBottom: 12 }}>
+                        정말 탈퇴하시겠습니까?<br />
+                        <span style={{ fontSize: 12, color: '#999' }}>탈퇴 시 모든 정보가 삭제되며 복구가 어렵습니다.</span>
+                      </p>
+                      {user?.provider === 'LOCAL' && (
+                        <div className="mypage-info-row" style={{ marginBottom: 12 }}>
+                          <input
+                            type="password"
+                            placeholder="비밀번호 입력"
+                            value={withdrawPassword}
+                            onChange={e => setWithdrawPassword(e.target.value)}
+                            className="mypage-info-input"
+                          />
+                        </div>
+                      )}
+                      {withdrawError && (
+                        <p style={{ fontSize: 13, color: '#c00', marginBottom: 8 }}>{withdrawError}</p>
+                      )}
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button
+                          onClick={handleWithdraw}
+                          disabled={withdrawLoading}
+                          style={{ background: '#c00', color: '#fff', border: 'none', padding: '8px 16px', fontSize: 13, cursor: 'pointer' }}
+                        >
+                          {withdrawLoading ? '...' : '탈퇴하기'}
+                        </button>
+                        <button
+                          onClick={() => { setShowWithdraw(false); setWithdrawPassword(''); setWithdrawError(''); }}
+                          style={{ background: '#f0f0f0', color: '#333', border: 'none', padding: '8px 16px', fontSize: 13, cursor: 'pointer' }}
+                        >
+                          취소
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
